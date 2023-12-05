@@ -4,12 +4,14 @@ namespace App\Http\Services;
 
 use App\Http\DTO\UserDTO;
 use App\Http\Repositories\UserRepository;
+use App\Http\Services\Interfaces\InterfaceUserService;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class UserService {
+class UserService implements InterfaceUserService{
     public UserRepository $userRepository;
     public JsonServices $json;
 
@@ -43,7 +45,7 @@ class UserService {
             throw new Exception("email or password doesnt correct!");
 
         $user = Auth::user();
-        $data =  [...$user->toArray(), $user->createToken("tokenUser")->accessToken];
+        $data =  [...$user->toArray(), "token" => $user->createToken("tokenUser")->accessToken, "spent_money" => $this->userRepository->getSpendingMoney($user->id, Carbon::now()->firstOfMonth())];
 
         return $this->json->responseData($data);
     }
@@ -56,8 +58,7 @@ class UserService {
             throw new Exception("email or password doesnt correct!");
     
         Auth::loginUsingId($user->id);
-        $user = Auth::user();
-        $data =  [...$user->toArray(), "token" => $user->createToken("tokenUser")->accessToken];
+        $data =  [...$user->toArray(), "token" => $user->createToken("tokenUser")->accessToken, "spent_money" => $this->userRepository->getSpendingMoney($user->id, Carbon::now()->firstOfMonth())];
 
         return $this->json->responseData($data);
     }
@@ -114,5 +115,12 @@ class UserService {
             throw new Exception("pin doesnt correct!");
 
         return $this->json->responseDataWithMessage($user, "pin corrected!");
+    }
+
+    public function getSpendingMoney($userId) {
+        if(!$data = $this->userRepository->getSpendingMoney($userId, Carbon::now()->firstOfMonth()))
+            throw new Exception("data spendinging money not found");
+
+        return $this->json->responseData($data);
     }
 }

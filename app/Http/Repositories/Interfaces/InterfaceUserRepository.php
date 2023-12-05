@@ -18,5 +18,6 @@ interface InterfaceUserRepository {
     public function getUserLogin();
     public function updateUser(UserDTO $user, $userId);
     public function updateBalanceUser($userId, $amount);
+    public function getSpendingMoney($userId, $startDate, $endDate);
 }
 

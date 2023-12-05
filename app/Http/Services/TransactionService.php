@@ -10,6 +10,7 @@ use App\Http\Repositories\LogRepository;
 use App\Http\Repositories\NotificationRepository;
 use App\Http\Repositories\TransactionRepository;
 use App\Http\Repositories\UserRepository;
+use App\Http\Services\Interfaces\InterfaceTransactionService;
 use App\Mail\TransactionNotificationEmail;
 use App\Models\Transaction;
 use App\Models\User;
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
-class TransactionService
+class TransactionService implements InterfaceTransactionService
 {
     public TransactionRepository $transactionRepository;
     public UserRepository $userRepository;

@@ -2,8 +2,9 @@
 
 namespace App\Http\Services;
 
+use App\Http\Services\Interfaces\InterfaceJsonService;
 
-class JsonServices {
+class JsonServices implements InterfaceJsonService{
     
     public function responseError($errors)  {
         return \response()->json(["errors" => $errors], 500);

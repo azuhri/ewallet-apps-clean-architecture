@@ -4,9 +4,10 @@ namespace App\Http\Services;
 
 use App\Http\DTO\LogDTO;
 use App\Http\Repositories\LogRepository;
+use App\Http\Services\Interfaces\InterfaceLoggingService;
 use Exception;
 
-class LoggingServices {
+class LoggingServices implements InterfaceLoggingService {
     public LogRepository $logRepository;
     public JsonServices $json;
 

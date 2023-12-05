@@ -4,6 +4,7 @@ namespace App\Http\Repositories;
 
 use App\Http\DTO\UserDTO;
 use App\Http\Repositories\Interfaces\InterfaceUserRepository;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -70,5 +71,18 @@ class UserRepository implements InterfaceUserRepository {
         $user->balance = $amount;
         $user->update();
         return $user;
+    }
+
+    public function getSpendingMoney($userId, $startDate, $endDate = \null) {
+        $transaction = Transaction::select("*")
+                        ->where("sender_id", $userId)
+                        ->orWhere("receiver_id", $userId);
+        if($startDate)
+            $transaction->where("created_at", ">=", $startDate);
+        
+        if($endDate)
+            $transaction->where("created_at", "<=", $endDate);
+
+        return $transaction->sum("amount");
     }
 }

@@ -3,9 +3,10 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\NotificationRepository;
+use App\Http\Services\Interfaces\InterfaceNotificationService;
 use Exception;
 
-class NotificationService
+class NotificationService implements InterfaceNotificationService
 {
     public NotificationRepository $notificationRepository;
     public JsonServices $json;
