@@ -6,6 +6,7 @@ use App\Http\DTO\TransactionDTO;
 use App\Http\Repositories\Interfaces\InterfaceTransactionRepository;
 use App\Models\Topup;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 
 class TransactionRepository implements InterfaceTransactionRepository
@@ -30,7 +31,7 @@ class TransactionRepository implements InterfaceTransactionRepository
         return Topup::create([
             "user_id" => $userId,
             "amount" => $amount,
-            "transaction_code" => "TRX-" . date("YmdHis") . \strtoupper(Str::random(6))
+            "transaction_code" => "TRX-" . date("YmdHis") . "-". \strtoupper(Str::random(6))
         ]);
     }
 
@@ -48,6 +49,12 @@ class TransactionRepository implements InterfaceTransactionRepository
             return $transaction;
         });
 
-        return $transactions;
+        $topup = Topup::where("user_id", $userId)->get();
+        $topup =  $topup->map(function ($topup) {
+            $topup->transaction_type = "TOPUP";
+            return $topup;
+        });
+        $collections = $transactions->concat($topup)->sortByDesc("created_at")->values();
+        return $collections->all();
     }
 }

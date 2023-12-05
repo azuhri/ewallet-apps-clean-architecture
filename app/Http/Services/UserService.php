@@ -68,7 +68,8 @@ class UserService implements InterfaceUserService{
             throw new Exception("session login doenst exist!");
         }
 
-        return $this->json->responseData($user);
+        $data =  [...$user->toArray(), "spent_money" => $this->userRepository->getSpendingMoney($user->id, Carbon::now()->firstOfMonth())];
+        return $this->json->responseData($data);
     }
 
     public function setPinUser($userId, $pin) {
